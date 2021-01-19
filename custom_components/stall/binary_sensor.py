@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional
 import voluptuous as vol
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_PROBLEM,
-    BinarySensorEntity
+    BinarySensorEntity,
 )
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_ENTITIES, CONF_NAME, STATE_UNKNOWN
@@ -14,7 +14,7 @@ from homeassistant.core import CALLBACK_TYPE, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.event import (
     async_track_point_in_time,
-    async_track_state_change_event
+    async_track_state_change_event,
 )
 from homeassistant.util.dt import now
 
@@ -32,13 +32,13 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_ENTITIES): [cv.entity_id],
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_THRESHOLD, default=60): cv.positive_int
+        vol.Optional(CONF_THRESHOLD, default=60): cv.positive_int,
     }
 )
 
 
 async def async_setup_platform(
-        hass, config, async_add_entities, discovery_info=None
+    hass, config, async_add_entities, discovery_info=None
 ):
     """Set up the Statistics sensor."""
     _, _ = hass, discovery_info  # Fake usage
@@ -47,9 +47,7 @@ async def async_setup_platform(
     name = config.get(CONF_NAME)
     threshold = config.get(CONF_THRESHOLD)
 
-    async_add_entities(
-        [StallSensor(entities, name, threshold)], True
-    )
+    async_add_entities([StallSensor(entities, name, threshold)], True)
 
     return True
 
@@ -73,9 +71,7 @@ class StallSensor(BinarySensorEntity):
                 self.hass, self._entity_ids, self._async_state_listener
             )
         )
-        self.async_on_remove(
-            self._async_remove_pit_listener
-        )
+        self.async_on_remove(self._async_remove_pit_listener)
 
         self._prepare_initial_map()
         self._schedule_pit_callback()
@@ -84,16 +80,18 @@ class StallSensor(BinarySensorEntity):
     @callback
     def _async_state_listener(self, event):
         """Handle the entity state changes."""
-        new_state = event.data.get('new_state')
+        new_state = event.data.get("new_state")
         if not new_state:
             return
 
-        entity_id = event.data.get('entity_id')
+        entity_id = event.data.get("entity_id")
         known_last_changed = self._timestamps.get(entity_id)
 
         _LOGGER.debug(
             "State change of '%s' observed @ '%s' (known @ '%s')",
-            entity_id, new_state.last_changed, known_last_changed
+            entity_id,
+            new_state.last_changed,
+            known_last_changed,
         )
 
         if new_state.last_changed != known_last_changed:
@@ -133,7 +131,8 @@ class StallSensor(BinarySensorEntity):
                 self._timestamps[entity_id] = entity_state.last_changed
                 _LOGGER.debug(
                     "Last state change of '%s' @ %s",
-                    entity_id, entity_state.last_changed
+                    entity_id,
+                    entity_state.last_changed,
                 )
             else:
                 _LOGGER.warning("Entity '%s' is unknown", entity_id)
@@ -178,8 +177,11 @@ class StallSensor(BinarySensorEntity):
 
         _LOGGER.debug(
             "Threshold check: %s - %s (%s) >= %s (%s)",
-            current_ts, last_update_ts, diff_in_minutes, self._threshold,
-            "PROBLEM" if next_state else "OK"
+            current_ts,
+            last_update_ts,
+            diff_in_minutes,
+            self._threshold,
+            "PROBLEM" if next_state else "OK",
         )
 
         self._state = next_state
