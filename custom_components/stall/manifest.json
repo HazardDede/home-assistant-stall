@@ -1,0 +1,8 @@
+{
+  "domain": "stall",
+  "name": "stall",
+  "documentation": "https://github.com/HazardDede/home-assistant-stall",
+  "dependencies": [],
+  "codeowners": ["@HazardDede"],
+  "requirements": []
+}

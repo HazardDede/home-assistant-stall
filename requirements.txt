@@ -1,0 +1,6 @@
+homeassistant==2021.1.3
+invoke
+flake8
+pylint
+isort
+black

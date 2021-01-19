@@ -1,0 +1,8 @@
+{
+  "name": "stall",
+  "render_readme": true,
+  "domains": [
+      "binary_sensor"
+  ],
+  "iot_class": "Local Push"
+}
