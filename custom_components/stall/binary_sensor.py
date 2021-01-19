@@ -9,8 +9,14 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
 )
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_ENTITIES, CONF_NAME, STATE_UNKNOWN
-from homeassistant.core import CALLBACK_TYPE, callback
+from homeassistant.const import (
+    CONF_ENTITIES,
+    CONF_NAME,
+)
+from homeassistant.core import (
+    CALLBACK_TYPE,
+    callback,
+)
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.event import (
     async_track_point_in_time,
@@ -127,6 +133,10 @@ class StallSensor(BinarySensorEntity):
     def _prepare_initial_map(self):
         for entity_id in self._entity_ids:
             entity_state = self.hass.states.get(entity_id)
+            # It might happen that an entity is not loaded so far.
+            # We will try to get its current state right now.
+            # If it does not work it will be received with the next state
+            # change event.
             if entity_state:
                 self._timestamps[entity_id] = entity_state.last_changed
                 _LOGGER.debug(
@@ -134,8 +144,6 @@ class StallSensor(BinarySensorEntity):
                     entity_id,
                     entity_state.last_changed,
                 )
-            else:
-                _LOGGER.warning("Entity '%s' is unknown", entity_id)
 
     @property
     def name(self) -> str:
@@ -167,7 +175,7 @@ class StallSensor(BinarySensorEntity):
     async def async_update(self) -> None:
         """Calculates the latest sensor state."""
         if not self._timestamps:
-            self._state = STATE_UNKNOWN
+            self._state = False
             return
 
         last_update_ts = max(self._timestamps.values())
