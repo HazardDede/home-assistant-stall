@@ -88,6 +88,16 @@ binary_sensor:
       - weather.home
 ```
 
+## Changelog
+
+**0.1.1**
+
+* Handles the case that entities are not available right now (during initialization) more silently
+
+**0.1.0**
+
+* Initial version
+
 
 <!---->
 
