@@ -2,3 +2,6 @@ blueprints/
 
 home-assistant.log
 home-assistant_v2.db
+
+.storage/core.restore_state
+.storage/http
