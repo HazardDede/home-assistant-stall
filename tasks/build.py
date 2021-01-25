@@ -27,6 +27,17 @@ def hass(ctx):
 
 
 @task
+def hass_docker(ctx):
+    """Runs home assistant in a docker container."""
+    ctx.run(
+        f"docker-compose -f ./.dev-container/docker-compose.yaml up hass"
+    )
+    ctx.run(
+        f"docker-compose -f ./.dev-container/docker-compose.yaml down"
+    )
+
+
+@task
 def isort(ctx):
     """Calls the isort tool to order the imports."""
     ctx.run(
