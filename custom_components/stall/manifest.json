@@ -4,5 +4,6 @@
   "documentation": "https://github.com/HazardDede/home-assistant-stall",
   "dependencies": [],
   "codeowners": ["@HazardDede"],
-  "requirements": []
+  "requirements": [],
+  "version": "0.1.2"
 }
